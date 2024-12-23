@@ -5,6 +5,7 @@ import { View, Text, ScrollView, Dimensions, Alert, Image } from "react-native";
 
 import { images } from "../../constants";
 import { CustomButton, FormField } from "../../components";
+import { register, sign_in } from "../../lib/appwrite";
 
 const SignUp = () => {
   const [isSubmitting, setSubmitting] = useState(false);
@@ -18,6 +19,27 @@ const SignUp = () => {
     if (form.username === "" || form.email === "" || form.password === "") {
       Alert.alert("Error", "Please fill in all fields");
     } else {
+      setSubmitting(true);
+      const { username, email, password } = form;
+
+      register(username, email, password).then(
+        (response) => {
+          sign_in(email, password).then((res) => {
+            console.log(res);
+          });
+
+          Alert.alert(
+            "Success",
+            "Your account is created.\n You're logged now !  "
+          );
+          router.replace("/home");
+        },
+        (error) => {
+          console.log(error);
+
+          Alert.alert("Error", "Something went wrong, retry !");
+        }
+      );
     }
   };
 

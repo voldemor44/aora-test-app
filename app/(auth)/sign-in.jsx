@@ -6,6 +6,7 @@ import { View, Text, ScrollView, Dimensions, Alert, Image } from "react-native";
 import { images } from "../../constants";
 
 import { FormField, CustomButton } from "../../components";
+import { sign_in } from "../../lib/appwrite";
 
 const SignIn = () => {
   const [form, setForm] = useState({
@@ -18,8 +19,18 @@ const SignIn = () => {
     if (form.email === "" || form.password === "") {
       Alert.alert("Error", "Please fill in all fields");
     } else {
-      Alert.alert("Success", "User signed in successfully");
-      router.replace("/home");
+      sign_in(form.email, form.password)
+        .then((res) => {
+          Alert.alert("Success", "User signed in successfully");
+          console.log(res);
+
+          router.replace("/home");
+        })
+        .catch((error) => {
+          Alert.alert("Error", "Credentials are wrong !");
+          console.log(error);
+          
+        });
     }
   };
 
